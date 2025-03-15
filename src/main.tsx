@@ -1,8 +1,9 @@
-import { Devvit, useWebView } from '@devvit/public-api';
+import { Devvit, useState, useWebView } from '@devvit/public-api';
 import { DEVVIT_SETTINGS_KEYS } from './constants.js';
 import { BlocksToWebviewMessage, WebviewToBlockMessage } from '../game/shared.js';
 import { Preview } from './components/Preview.js';
 import { getPokemonByName } from './core/pokeapi.js';
+import { getRandomNumber } from './server/randomNumber.js';
 
 Devvit.addSettings([
   // Just here as an example
@@ -83,8 +84,19 @@ Devvit.addCustomPostType({
       },
     });
 
+    const [number, setNumber] = useState<number | null>(null);
+
+    async function fetchRandomNumber() {
+      const result = await getRandomNumber();
+      setNumber(result);
+    }
+
     return (
       <vstack height="100%" width="100%" alignment="center middle">
+        <button appearance="primary" onPress={fetchRandomNumber}>
+          Generate Random Number
+        </button>
+        {number !== null && <text>Your number: {number}</text>}
         <button
           onPress={() => {
             mount();
